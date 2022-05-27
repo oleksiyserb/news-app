@@ -1,12 +1,15 @@
 <template>
   <section>
     <base-card>
-      <article-filter></article-filter>
+      <article-filter
+        v-model:sort-input="sortInput"
+        v-model:sort-method="sortMethod"
+      ></article-filter>
     </base-card>
     <base-card>
       <ul>
         <article-item
-          v-for="article in articles"
+          v-for="article in filteredArticles"
           :key="article.id"
           :id="article.id"
           :title="article.title"
@@ -27,9 +30,25 @@ export default {
     ArticleFilter,
     ArticleItem,
   },
+  data() {
+    return {
+      sortInput: "",
+      sortMethod: "title",
+    };
+  },
   computed: {
     articles() {
       return this.$store.getters.articles;
+    },
+    filteredArticles() {
+      if (this.sortMethod === "description") {
+        return this.articles.filter((article) =>
+          article.description.includes(this.sortInput)
+        );
+      }
+      return this.articles.filter((article) =>
+        article.title.includes(this.sortInput)
+      );
     },
   },
 };
